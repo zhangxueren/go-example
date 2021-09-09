@@ -18,3 +18,17 @@ func twoSum(numbers []int, target int) []int {
 	}
 	return nil
 }
+
+/**
+344. 反转字符串
+https://leetcode-cn.com/problems/reverse-string/
+@tags 双指针、原地赋值
+ */
+func ReverseString(s []byte)  {
+	start, end := 0, len(s)-1
+	for start < end {
+		s[start], s[end] = s[end], s[start]
+		start++
+		end--
+	}
+}
