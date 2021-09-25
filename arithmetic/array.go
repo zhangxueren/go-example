@@ -32,3 +32,26 @@ func ReverseString(s []byte)  {
 		end--
 	}
 }
+
+//557. 反转字符串中的单词 III
+//tag: 数组、双指针
+func ReverseWords(s string) string {
+	ss := []byte(s)
+
+	start, end, lastBlank := 0, 0, -1
+	for k, _ := range ss {
+		if k == len(ss)-1 || string(ss[k+1]) == " "{
+			start = lastBlank+1
+			end = k
+			lastBlank = k+1
+
+			for start < end {
+				ss[start], ss[end] = s[end], s[start]
+				start ++
+				end --
+			}
+
+		}
+	}
+	return string(ss)
+}
