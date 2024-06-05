@@ -2,12 +2,24 @@ package main
 
 import (
 	"fmt"
-	"go-example/v0/arithmetic"
+	"go-example/zyb/wxgroup"
+	"os"
 )
 
 func main() {
-	head := &arithmetic.ListNode{Val:1, Next:&arithmetic.ListNode{Val:2, Next:&arithmetic.ListNode{Val:3, Next:&arithmetic.ListNode{Val:4, Next:nil}}}}
+	args := os.Args
+	if len(args) < 2 {
+		fmt.Println("Usage: go run main.go resetRecoverTask")
+		return
+	}
 
-	fmt.Println(arithmetic.MiddleNode(head))
+	action := args[1]
+	if action == "resetRecoverTask" {
+		wxgroup.ResetRecoverTask()
+	}
+
+	if action == "updateGroupClassify" {
+		wxgroup.UpdateGroupClassifyByClassify2Id(23523, 23508, 23523, 0)
+	}
+
 }
-
