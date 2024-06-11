@@ -4,14 +4,51 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"go-example/zyb"
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strings"
+
+	"github.com/spf13/cast"
+	"github.com/xuri/excelize/v2"
 )
 
-const COOKIE = "IPS_d702cc584b8a2bbd0d8f309436dabb851717554753"
-const UpdateGroupClassifyUrl = "https://wxtools-wxwork1-cc.suanshubang.cc/wxqk/classify/updategroupclassify"
-const GetGroupListUrlByClassify2Id = "https://wxtools-wxwork1-cc.suanshubang.cc/wxqk/classify/getgrouplist"
+const UpdateGroupClassifyUrl = "https://wxtools.zuoyebang.cc/wxqk/classify/updategroupclassify"
+const GetGroupListUrlByClassify2Id = "https://wxtools.zuoyebang.cc/wxqk/classify/getgrouplist"
+
+func UpdateGroupClassifyByFile(filePath string, totalCellNum int, wxGroupIdIndex int, classify1IdIndex int, classify2IdIndex int) {
+	f, err := excelize.OpenFile(filePath)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	rows, err := f.GetRows("Sheet1")
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	for i, row := range rows {
+		if len(row) < totalCellNum {
+			fmt.Printf("数据不全跳过，index[%d] columnNum[%d] rowInfo[%v] \n", i+1, len(row), row)
+			continue
+		}
+
+		wxGroupId, classify1Id, classify2Id := row[wxGroupIdIndex], row[classify1IdIndex], row[classify2IdIndex]
+		if len(wxGroupId) == 0 || cast.ToInt(classify1Id) == 0 || cast.ToInt(classify2Id) == 0 {
+			fmt.Printf("数据异常跳过，index[%d] wxgroupId[%v] classify1Id[%v] classify2Id[%v] \n", i+1, wxGroupId, classify1Id, classify2Id)
+			continue
+		}
+
+		if strings.Contains(wxGroupId, "A") {
+			wxGroupId = strings.ReplaceAll(wxGroupId, "A", "")
+		}
+
+		fmt.Printf("开始处理数据，index[%d] wxgroupId[%v] classify1Id[%v] classify2Id[%v] \n", i+1, wxGroupId, classify1Id, classify2Id)
+		_ = updateGroupClassify([]string{wxGroupId}, cast.ToInt(classify1Id), cast.ToInt(classify2Id), 0)
+	}
+}
 
 func UpdateGroupClassifyByClassify2Id(classify2Id int, classify1Id int, classity2Id int, autoGroupClassifyByGrade int) {
 	// 定义请求地址和初始页码
@@ -20,7 +57,7 @@ func UpdateGroupClassifyByClassify2Id(classify2Id int, classify1Id int, classity
 	pageNo := 1
 
 	// 设置Cookie信息
-	cookie := "RANGERS_WEB_ID=5aa89a84-50f9-42a2-a610-ae3532318a0e; RANGERS_SAMPLE=0.712393799821835; ZYBIPSCAS=" + COOKIE
+	cookie := "RANGERS_WEB_ID=5aa89a84-50f9-42a2-a610-ae3532318a0e; RANGERS_SAMPLE=0.712393799821835; ZYBIPSCAS=" + zyb.COOKIE
 
 	type Response struct {
 		Data struct {
@@ -70,8 +107,8 @@ func UpdateGroupClassifyByClassify2Id(classify2Id int, classify1Id int, classity
 		pageNo++
 	}
 
-	fmt.Println("All groups data:")
-	fmt.Println(groupIds)
+	// fmt.Println("All groups data:")
+	// fmt.Println(groupIds)
 
 	// 更新群分类
 	UpdateGroupClassifyForBatch(groupIds, classify1Id, classity2Id, autoGroupClassifyByGrade)
@@ -115,7 +152,7 @@ func updateGroupClassify(wxgroupIds []string, classify1Id int, classity2Id int, 
 
 	// 设置请求头
 	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Cookie", "RANGERS_WEB_ID=5aa89a84-50f9-42a2-a610-ae3532318a0e; RANGERS_SAMPLE=0.712393799821835; ZYBIPSCAS="+COOKIE)
+	req.Header.Set("Cookie", "RANGERS_WEB_ID=5aa89a84-50f9-42a2-a610-ae3532318a0e; RANGERS_SAMPLE=0.712393799821835; ZYBIPSCAS="+zyb.COOKIE)
 
 	// 发送请求
 	client := &http.Client{}

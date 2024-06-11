@@ -32,7 +32,11 @@ func (d dbg) PrintAndWaiting(data map[string]interface{}) {
 	time.Sleep(time.Second * 1000000)
 }
 
-func (d dbg) Waiting(mark interface{}) {
-	fmt.Printf("Waiting at mark[%v]...", mark)
+func (d dbg) Waiting(mark ...interface{}) {
+	if len(mark) > 0 {
+		for i, v := range mark {
+			fmt.Printf("Waiting at mark[%d] value[%v]\n", i, v)
+		}
+	}
 	time.Sleep(time.Second * 1000000)
 }
