@@ -17,13 +17,13 @@ import (
 const UpdateGroupClassifyUrl = "https://wxtools.zuoyebang.cc/wxqk/classify/updategroupclassify"
 const GetGroupListUrlByClassify2Id = "https://wxtools.zuoyebang.cc/wxqk/classify/getgrouplist"
 
-func UpdateGroupClassifyByFile(filePath string, totalCellNum int, wxGroupIdIndex int, classify1IdIndex int, classify2IdIndex int) {
+func UpdateGroupClassifyByFile(filePath string, sheetName string, totalCellNum int, wxGroupIdIndex int, classify1IdIndex int, classify2IdIndex int) {
 	f, err := excelize.OpenFile(filePath)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	rows, err := f.GetRows("Sheet1")
+	rows, err := f.GetRows(sheetName)
 	if err != nil {
 		fmt.Println(err)
 		return

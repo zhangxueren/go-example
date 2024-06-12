@@ -20,11 +20,11 @@ func main() {
 	}
 
 	if action == "updateGroupClassify" {
-		// baseDir, _ := os.Getwd()
-		// file1 := "tmp/0605群分组调整/群信息-2024-05-09 15_29_07.xlsx"
-		// absFilePath := fmt.Sprintf("%s/%s", baseDir, file1)
-		// wxgroup.UpdateGroupClassifyByFile(absFilePath, 16, 0, 14, 15)
-		// return
+		baseDir, _ := os.Getwd()
+		file1 := "tmp/0605群分组调整/待分组0611.xlsx"
+		absFilePath := fmt.Sprintf("%s/%s", baseDir, file1)
+		wxgroup.UpdateGroupClassifyByFile(absFilePath, "Sheet1", 20, 16, 18, 19)
+		return
 
 		// mapRel := map[int]map[string]int{
 		// 	5556: {
