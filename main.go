@@ -2,8 +2,11 @@ package main
 
 import (
 	"fmt"
+	"go-example/helper/labs"
 	"go-example/zyb/asset"
 	"go-example/zyb/wxgroup"
+	"go-example/zyb/yxcontent"
+	"go-example/zyb/yxtaskengine"
 	"os"
 )
 
@@ -15,7 +18,13 @@ func main() {
 	}
 
 	action := args[1]
-	if action == "resetRecoverTask" {
+	if action == "EmbedStruct" {
+		animal := labs.NewAnimal("dog", 1)
+		fmt.Println(animal.Name, animal.Age)
+
+	}
+
+	if action == "ResetRecoverTask" {
 		wxgroup.ResetRecoverTask()
 	}
 
@@ -44,7 +53,7 @@ func main() {
 
 	if action == "exportAsset" {
 		baseDir, _ := os.Getwd()
-		fileName := "tmp/0618-个人号全量资产信息.xlsx"
+		fileName := "tmp/0813-个人号全量资产信息.xlsx"
 		absFilePath := fmt.Sprintf("%s/%s", baseDir, fileName)
 		asset.ExportUserListToExcel(absFilePath)
 	}
@@ -54,4 +63,78 @@ func main() {
 		wxgroup.TriggerWindow()
 	}
 
+	if action == "GenDocCapture" {
+		yxcontent.GenDocCapture()
+	}
+
+	if action == "ChangeRobotGroup" {
+		asset.ChangeRobotGroup()
+	}
+
+	// 迁移企微分组
+	if action == "RecoverAssetGroups" {
+		asset.RecoverAssetGroups()
+	}
+
+	// 群继承数据分析
+	if action == "inherit" {
+		baseDir, _ := os.Getwd()
+		fileName := "tmp/6月份-督学群继承动作日志明细.xlsx"
+		absFilePath := fmt.Sprintf("%s/%s", baseDir, fileName)
+		wxgroup.AnalyseInherit(absFilePath)
+	}
+
+	// 退号任务
+	if action == "ReturnRobot" {
+		asset.ReturnRobot()
+	}
+
+	// 退号任务
+	if action == "CheckReturnRobot" {
+		asset.CheckReturnRobot()
+	}
+
+	if action == "ExportCourseList" {
+		asset.ExportCourseList()
+	}
+
+	//刷新高一因升年级错配督学群接回失败任务
+	if action == "ResetInvalidRecoverGroupRule" {
+		wxgroup.ResetInvalidRecoverGroupRule()
+	}
+
+	// 刷新升年级错配课程信息
+	if action == "RepairCourse" {
+		wxgroup.RepairCourse()
+	}
+
+	if action == "ResetWxidTeamid" {
+		asset.ResetWxidTeamid()
+	}
+
+	if action == "InheritTask" {
+		asset.InheritTask()
+	}
+
+	if action == "GetCourseDetailList" {
+		wxgroup.GetCourseDetailList()
+	}
+
+	if action == "CheckFinish" {
+		asset.CheckFinish()
+	}
+
+	if action == "GetKpGroupList" {
+		wxgroup.GetKpGroupList()
+	}
+
+	//yxtaskengine
+	if action == "CleanAddMemberCtrl" {
+		yxtaskengine.CleanAddMemberCtrl()
+	}
+
+	//解散群
+	if action == "DismissGroup" {
+		wxgroup.DismissGroup()
+	}
 }
