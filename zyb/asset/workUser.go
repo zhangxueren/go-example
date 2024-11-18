@@ -249,7 +249,6 @@ func fetchWorkDetailByWorkUserId(workUserId string) workItem {
 
 func fetchWorkListByPage(pageNo int) []workItem {
 	url := "https://wxtools.zuoyebang.cc/wxwork/user/workeruserlist"
-
 	// Prepare the request body as JSON
 	requestBody := map[string]interface{}{
 		"isOnline":            "-1",
@@ -297,7 +296,7 @@ func fetchWorkListByPage(pageNo int) []workItem {
 	// Set headers
 	req.Header.Set("accept", "application/json, text/plain, */*")
 	req.Header.Set("content-type", "application/json")
-	req.Header.Set("cookie", "RANGERS_WEB_ID=6430599a-1243-4e7d-9d30-4de92cf0df82; RANGERS_SAMPLE=0.07367398890598964; uid=zhangxueren; ZYBUSS=PwzWvo3l9NUKJIBEqGfFWPG56knpG0J71FHfn25rH5eZGJKMrZmIiqJtAIwYJGHX; ZYBIPSCAS="+zyb.COOKIE+"; Hm_lvt_c33960c712441eec1b994580263ccb1a=1715756176;")
+	req.Header.Set("cookie", "HMACCOUNT=19A5FA5D6642C585; uid=zhangxueren; Hm_lvt_c33960c712441eec1b994580263ccb1a=1721738711; Hm_lpvt_c33960c712441eec1b994580263ccb1a=1723450262; fp=b1185116131254e0f9d7cca202f46803; RANGERS_WEB_ID=5d80359c-cb85-4c27-82d0-45da799bfe41; RANGERS_SAMPLE=0.4995041547977497; __tips__=1; ZYBIPSCAS=IPS_148ed96d3ef99c0a58ca780fec79604f1729395310; ZYBIPSUN=7a68616e6778756572656e")
 
 	// Perform the request
 	resp, err := client.Do(req)

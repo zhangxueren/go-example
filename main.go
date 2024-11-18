@@ -1,16 +1,27 @@
 package main
 
 import (
+	"context"
 	"fmt"
+	"go-example/helper"
 	"go-example/helper/labs"
 	"go-example/zyb/asset"
+	"go-example/zyb/grh"
+	"go-example/zyb/grh/transuser"
 	"go-example/zyb/wxgroup"
+	"go-example/zyb/wxgroup/leavegroup"
+	"go-example/zyb/wxgroup/messpush"
+	"go-example/zyb/wxgroup/outgroup"
+	"go-example/zyb/wxgroup/qrcode"
 	"go-example/zyb/yxcontent"
 	"go-example/zyb/yxtaskengine"
 	"os"
 )
 
 func main() {
+	var ctx = context.Background()
+	helper.Init(ctx)
+
 	args := os.Args
 	if len(args) < 2 {
 		fmt.Println("Usage: go run main.go resetRecoverTask")
@@ -18,6 +29,7 @@ func main() {
 	}
 
 	action := args[1]
+
 	if action == "EmbedStruct" {
 		animal := labs.NewAnimal("dog", 1)
 		fmt.Println(animal.Name, animal.Age)
@@ -53,7 +65,7 @@ func main() {
 
 	if action == "exportAsset" {
 		baseDir, _ := os.Getwd()
-		fileName := "tmp/0813-个人号全量资产信息.xlsx"
+		fileName := "tmp/1021-个人号全量资产信息.xlsx"
 		absFilePath := fmt.Sprintf("%s/%s", baseDir, fileName)
 		asset.ExportUserListToExcel(absFilePath)
 	}
@@ -137,4 +149,35 @@ func main() {
 	if action == "DismissGroup" {
 		wxgroup.DismissGroup()
 	}
+
+	//获取群解散明细
+	if action == "GetGroupDismissInfo" {
+		wxgroup.GetGroupDismissInfo()
+	}
+
+	if action == "GetGroupDetailInfo" {
+		outgroup.GetGroupDetailInfo()
+	}
+
+	if action == "ExportGroupList" {
+		grh.ExportGroupList()
+	}
+
+	if action == "ExportPushRobots" {
+		messpush.ExportPushRobots()
+	}
+
+	if action == "GetGroupQrCode" {
+		qrcode.GetGroupQrCode()
+	}
+
+	if action == "ResetTransUserTask" {
+		transuser.ResetTransUserTask()
+	}
+
+	//退群
+	if action == "LeaveGroup" {
+		leavegroup.LeaveGroup()
+	}
+
 }

@@ -1,0 +1,3 @@
+package helper
+
+var ZYBIPSCAS = "IPS_148ed96d3ef99c0a58ca780fec79604f1729395310"
