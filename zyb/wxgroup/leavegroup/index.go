@@ -9,16 +9,17 @@ import (
 	"time"
 
 	uuid "github.com/satori/go.uuid"
+	"github.com/spf13/cast"
 	"github.com/tidwall/gjson"
 )
 
-var leaveGroupFile = "tmp/wxgroup/leavegroup/退号slave群明细-1118.csv"
+var leaveGroupFile = "tmp/wxgroup/leavegroup/retry批次退群slave群明细.csv"
 var resultFile = "tmp/wxgroup/leavegroup/result.csv"
 var wxGroupIdsMap map[string][]string
 var existsWxGroupIdsMap map[string][]string
-var wxChannel = make(chan string, 60)
+var wxChannel = make(chan string, 100)
 var wg sync.WaitGroup
-var workerNum = 40
+var workerNum = 30
 
 func initExistsWxGroupIdsMap() {
 	existsWxGroupIdsMap = make(map[string][]string)
@@ -154,7 +155,7 @@ func leaveGroup(i int) {
 			errNo := gjson.Get(kpErrJson, "errNo").Int()
 			errStr := gjson.Get(kpErrJson, "errStr").String()
 
-			appendRecord(resultFile, []string{wxId, wxGroupId})
+			appendRecord(resultFile, []string{wxId, wxGroupId, cast.ToString(errNo), errStr})
 
 			// 检查 errNo 是否为 0
 			if errNo != 0 {

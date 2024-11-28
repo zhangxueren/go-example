@@ -17,7 +17,7 @@ type WxExecutorActionResponse struct {
 
 // RunAction sends an action to the specified URL and returns the response data.
 func RunAction(wxId, bizRequestId string, actionType int, actionContent map[string]interface{}) (map[string]interface{}, error) {
-	url := "http://10.108.208.184:8099/wxexecutor/action/send"
+	url := "http://10.110.171.84:8099/wxexecutor/action/send"
 
 	// Create the JSON payload.
 	payload := map[string]interface{}{

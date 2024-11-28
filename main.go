@@ -13,6 +13,7 @@ import (
 	"go-example/zyb/wxgroup/messpush"
 	"go-example/zyb/wxgroup/outgroup"
 	"go-example/zyb/wxgroup/qrcode"
+	"go-example/zyb/wxgroup/transgroup"
 	"go-example/zyb/yxcontent"
 	"go-example/zyb/yxtaskengine"
 	"os"
@@ -65,7 +66,7 @@ func main() {
 
 	if action == "exportAsset" {
 		baseDir, _ := os.Getwd()
-		fileName := "tmp/1021-个人号全量资产信息.xlsx"
+		fileName := "tmp/1118-个人号全量资产信息.xlsx"
 		absFilePath := fmt.Sprintf("%s/%s", baseDir, fileName)
 		asset.ExportUserListToExcel(absFilePath)
 	}
@@ -178,6 +179,11 @@ func main() {
 	//退群
 	if action == "LeaveGroup" {
 		leavegroup.LeaveGroup()
+	}
+
+	//群继承
+	if action == "TransGroup" {
+		transgroup.TransGroup()
 	}
 
 }

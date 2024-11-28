@@ -14,17 +14,17 @@ import (
 
 var wgLock sync.WaitGroup
 var fileItemCnt int
-var groupIdsFileName = "tmp/wxgroup/messpush/内容群-groupIds.txt"
-var outputFileName = "tmp/wxgroup/messpush/群消息推送机器人明细-内容群.csv"
+var groupIdsFileName = "tmp/wxgroup/messpush/groupids-1125.txt"
+var outputFileName = "tmp/wxgroup/messpush/外部群异常群明细-1127-result.csv"
 var groupIds []string
 
 func ExportPushRobots() {
 	InitFileInfo()
-	trunks := splitSlice(groupIds, 30000)
+	trunks := splitSlice(groupIds, 100)
 	fmt.Println("分片数量：", len(trunks), " 已导出数量:", fileItemCnt, " 剩余未导出数量：", len(groupIds))
 
 	if fileItemCnt == 0 {
-		appendRecord(outputFileName, []string{"群ID", "推送机器人", "角色", "所属战队", "isAdmin", "isOwner"})
+		appendRecord(outputFileName, []string{"群ID", "群主ID", "群主角色", "群主战队ID", "群主在线状态", "是否有可用推送机器人"})
 	}
 
 	for _, trunk := range trunks {
@@ -125,9 +125,26 @@ func appendRecord(fileName string, record []string) error {
 func process(groupIds []string) {
 	defer wgLock.Done()
 	for _, wxGroupId := range groupIds {
-		wxGroupDetail, _ := getPushRobotDetail(wxGroupId)
-		// {"群ID", "推送机器人", "角色", "所属战队", "isAdmin", "isOwner"})
-		strRow := fmt.Sprintf("%s,%s,%d,%d,%d,%d", wxGroupId+"_", wxGroupDetail.WxId, wxGroupDetail.Role, wxGroupDetail.QkTeamId, wxGroupDetail.IsAdmin, wxGroupDetail.IsOwner)
+		robotList, _ := getPushRobotDetail(wxGroupId)
+		var ownerWxId string
+		var ownerRole int
+		var ownerIsOnline int
+		var hasPushRobot = 0
+		var ownerQkTeamId int
+		for _, wxGroupDetail := range robotList {
+			if wxGroupDetail.IsOwner == 1 {
+				ownerWxId = wxGroupDetail.WxId
+				ownerRole = wxGroupDetail.Role
+				ownerIsOnline = wxGroupDetail.IsOnline
+				ownerQkTeamId = wxGroupDetail.QkTeamId
+
+			}
+			if wxGroupDetail.IsOnline == 1 && (wxGroupDetail.Role == 101 || wxGroupDetail.Role == 102 || wxGroupDetail.Role == 103) {
+				hasPushRobot = 1
+			}
+		}
+		// "群ID", "群主ID", "群主角色", "群主战队ID", "群主在线状态", "是否有可用推送机器人"
+		strRow := fmt.Sprintf("%s,%s,%d,%d,%d,%d,", wxGroupId+"_", ownerWxId, ownerRole, ownerQkTeamId, ownerIsOnline, hasPushRobot)
 		arrRow := strings.Split(strRow, ",")
 		appendRecord(outputFileName, arrRow)
 		fmt.Println(strRow)
@@ -153,7 +170,7 @@ type SearchGroupRobotRespDataItem struct {
 	IsOnline int    `json:"isOnline"`
 }
 
-func getPushRobotDetail(wxGroupId string) (detail SearchGroupRobotRespDataItem, err error) {
+func getPushRobotDetail(wxGroupId string) (detail []SearchGroupRobotRespDataItem, err error) {
 
 	url := "https://wxtools.zuoyebang.cc/wxgc/groupmember/searchgrouprobot?from=messagepush&wxGroupId=" + wxGroupId
 
@@ -197,8 +214,5 @@ func getPushRobotDetail(wxGroupId string) (detail SearchGroupRobotRespDataItem, 
 		return detail, fmt.Errorf(err.Error())
 	}
 
-	for _, item := range respData.Data.RobotInfo {
-		return item, nil
-	}
-	return
+	return respData.Data.RobotInfo, nil
 }
